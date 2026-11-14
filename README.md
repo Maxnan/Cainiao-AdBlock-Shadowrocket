@@ -69,3 +69,7 @@ https://raw.githubusercontent.com/Maxnan/Cainiao-AdBlock-Shadowrocket/main/Caini
 5. 仍存在视频开屏时，在广告出现前后清空并导出**已脱敏**的请求日志/HAR；明确说明是启动广告还是首页广告。请勿公开包含手机号、收货地址、Cookie、Token、session、物流信息等敏感字段的原始抓包。
 
 > 开屏视频可能来自独立广告 SDK、预加载资源或菜鸟主网关。仅凭第三方 SDK 的统计域名被拒绝，不能确定广告素材实际来源；需要相应请求才能安全追加规则。默认不大范围阻断抖音或阿里共享 CDN 域名，以免影响其他 App。
+
+- **v1.2（2026-11-14）**：根据用户提供的 Shadowrocket SQLite 日志（17:43:33–17:46:13，共 203 条请求）补充腾讯优量汇 `gdt.qq.com` 子域、`sdk.e.qq.com`、`sdkquic.e.qq.com` 和穿山甲 `pangolin-sdk-toutiao1.com`、`pangolin-sdk-toutiao-b.com` 的域名拦截。原日志显示这些域名曾被 DIRECT 放行；这些规则针对整个设备生效，而不是仅菜鸟 App，可能影响其他 App 中的广告与 SDK。没有拦截 `qq.com` 全域、`bytescm.com`、`douyinvod.com` 等共享服务。
+
+> **证据边界**：本次 SQLite 数据库包含请求 URL、分流结果及时间，不含完整 HTTP 响应体，也未记录广告素材与视频的对应关系。命中广告 SDK 并不等于确认开屏视频的实际来源。重新启动 App 后若视频仍在，请提供广告出现前后的**脱敏**网络请求记录，或在应用内安全清理缓存再测试。
