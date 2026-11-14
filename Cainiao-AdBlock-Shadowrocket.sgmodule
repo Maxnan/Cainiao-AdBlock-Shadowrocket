@@ -1,5 +1,5 @@
 #!name=菜鸟去广告（小火箭整合版）
-#!desc=整合 UserC23 的 Loon 广告规则与 JEFFRY-ZH 的 Quantumult X 响应清洗脚本；尽量保留查件、取件、寄件功能。需要开启 HTTPS 解密并信任证书。
+#!desc=v1.1：广告池接口改为完整拒绝；结合 Loon 和 Quantumult X 上游规则。需要 HTTPS 解密和信任证书。
 #!author=Based on UserC23 & JEFFRY-ZH; Shadowrocket adaptation
 #!homepage=https://github.com/Maxnan/Cainiao-AdBlock-Shadowrocket
 #!category=广告拦截
@@ -35,13 +35,13 @@ DOMAIN,ssp.iytcdn.com,REJECT
 
 [URL Rewrite]
 # 2. 独立广告接口：用空字典拒绝；避免直接断连。
+# v1.1 修复：对所有 nbnetflow.ads.* 统一 reject-dict，不再依赖 JS 清空其中三个接口。
+^https?:\/\/[^/]+\/gw\/mtop\.cainiao\.guoguo\.nbnetflow\.ads\. - reject-dict
 ^https?:\/\/[^/]+\/gw\/mtop\.cainiao\.adx\.flyad\.getad - reject-dict
 ^https?:\/\/[^/]+\/gw\/mtop\.cainiao\.adkeyword\. - reject-dict
 ^https?:\/\/[^/]+\/gw\/mtop\.cainiao\.nbopen\.miniapp\.recommend\.cpc - reject-dict
 ^https?:\/\/[^/]+\/gw\/mtop\.[^/]*\.(?:splash|startup|launch|advert|advertise)\. - reject-dict
 ^https?:\/\/[^/]+\/gw\/mtop\.cainiao\.nbmensa\.research\. - reject-dict
-# 其他 nbnetflow 广告接口；show/mshow/index 交由下面 JS 清理，避免规则互相抢占。
-^https?:\/\/[^/]+\/gw\/mtop\.cainiao\.guoguo\.nbnetflow\.ads\.(?!(?:show|mshow|index)\.cn(?:\/|$)) - reject-dict
 
 # 3. 可选的激进营销位拦截（默认关闭，可能影响签到/领券）
 # ^https?:\/\/[^/]*cnactivitycenter[^/]*\/gw\/mtop\. - reject-dict
@@ -51,9 +51,9 @@ DOMAIN,ssp.iytcdn.com,REJECT
 
 [Script]
 # 4. 使用 JEFFRY-ZH 的 V3 响应清理脚本，保留业务接口原始 JSON 结构。
-# 脚本处理：开屏广告池、首页弹窗、推广商品流、广告气泡、营销搜索词。
+# 脚本处理：首页弹窗、推广商品流、广告气泡、营销搜索词。
+# 开屏广告池由 URL Rewrite 直接拒绝；App 本地缓存或其他 SDK 广告源仍可能残留。
 菜鸟首页与弹窗 = type=http-response,pattern=^https?:\/\/[^/]+\/gw\/mtop\.cainiao\.app\.e2e\.engine\.page\.fetch(?:\.cn)?\/1\.0,requires-body=1,max-size=-1,script-path=https://raw.githubusercontent.com/JEFFRY-ZH/Cainiao-AdBlock/main/cainiao_ad.js
-菜鸟广告池 = type=http-response,pattern=^https?:\/\/[^/]+\/gw\/mtop\.cainiao\.guoguo\.nbnetflow\.ads\.(?:show|mshow|index)\.cn\/1\.0,requires-body=1,max-size=-1,script-path=https://raw.githubusercontent.com/JEFFRY-ZH/Cainiao-AdBlock/main/cainiao_ad.js
 菜鸟商品推广流 = type=http-response,pattern=^https?:\/\/[^/]+\/gw\/mtop\.cainiao\.nbcps\.presentation\.fetch\.cn\/1\.0,requires-body=1,max-size=-1,script-path=https://raw.githubusercontent.com/JEFFRY-ZH/Cainiao-AdBlock/main/cainiao_ad.js
 
 [MITM]
