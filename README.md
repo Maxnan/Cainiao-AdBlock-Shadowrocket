@@ -21,7 +21,7 @@ https://raw.githubusercontent.com/Maxnan/Cainiao-AdBlock-Shadowrocket/main/Caini
 
 - 拦截部分广告 SDK、素材和广告监测域名。
 - URL 重写拒绝部分独立广告接口。
-- 使用上游 JavaScript 对菜鸟首页、弹窗、广告池和推广内容的 HTTP 响应做清理。
+- 使用上游 JavaScript 对菜鸟首页、弹窗和推广内容的 HTTP 响应做清理。开屏广告池的 `nbnetflow.ads.*` 现在统一通过 URL Rewrite 直接拦截。
 - 保留查快递、取件、寄件等核心功能为优先目标，但**不能保证各版本完全兼容**。
 
 ## 使用方法
@@ -55,3 +55,17 @@ https://raw.githubusercontent.com/Maxnan/Cainiao-AdBlock-Shadowrocket/main/Caini
 ## 维护
 
 发现误拦截或残留广告，可在仓库 Issue 中说明：菜鸟版本、iOS/Shadowrocket 版本、失效页面（注意脱敏），以便后续调整。
+
+## 更新记录
+
+- **v1.1（2026-11-14）**：修正 `nbnetflow.ads.*` 广告接口拦截。所有同系列接口统一使用 `reject-dict`，不再让其中的 show/mshow/index 依赖上游 JS；避免脚本与拒绝规则相互争用。此变更不能保证清除其他广告 SDK 或本地缓存中的开屏视频。
+
+## 开屏仍有广告：如何排查
+
+1. 在 Shadowrocket 的 **配置 → 模块** 中刷新/更新此远程模块，检查描述含 `v1.1`，保持模块勾选启用。
+2. 在当前配置的 **HTTPS 解密** 中确认开关已启用、CA 证书已被系统完全信任；设置页面只显示主配置原有域名，不一定列出模块追加的主机名。
+3. 在 **数据/请求日志** 中搜索 `mtop.cainiao`、`guide-acs.m.taobao.com`、`cn-acs.m.cainiao.com`，检查是否能查看完整 HTTPS URL 和响应，而不只是 CONNECT 或域名；仅仅看到第三方 SDK 的 `REJECT` 不足以证明 MTop 内容清洗已生效。
+4. 若应用内提供“清理缓存”，先尝试该功能；强制退出后重新进入再测试。**不要为了测试直接卸载 App**，以免丢失本地数据。
+5. 仍存在视频开屏时，在广告出现前后清空并导出**已脱敏**的请求日志/HAR；明确说明是启动广告还是首页广告。请勿公开包含手机号、收货地址、Cookie、Token、session、物流信息等敏感字段的原始抓包。
+
+> 开屏视频可能来自独立广告 SDK、预加载资源或菜鸟主网关。仅凭第三方 SDK 的统计域名被拒绝，不能确定广告素材实际来源；需要相应请求才能安全追加规则。默认不大范围阻断抖音或阿里共享 CDN 域名，以免影响其他 App。
