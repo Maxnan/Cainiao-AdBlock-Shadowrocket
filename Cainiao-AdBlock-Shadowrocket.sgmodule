@@ -1,0 +1,63 @@
+#!name=菜鸟去广告（小火箭整合版）
+#!desc=整合 UserC23 的 Loon 广告规则与 JEFFRY-ZH 的 Quantumult X 响应清洗脚本；尽量保留查件、取件、寄件功能。需要开启 HTTPS 解密并信任证书。
+#!author=Based on UserC23 & JEFFRY-ZH; Shadowrocket adaptation
+#!homepage=https://github.com/Maxnan/Cainiao-AdBlock-Shadowrocket
+#!category=广告拦截
+#!system=ios
+#!date=2026-11-14
+
+# 适用于 Shadowrocket 模块（不替换原有分流配置）
+# 上游：
+# https://github.com/UserC23/cainiao-ads-loon
+# https://github.com/JEFFRY-ZH/Cainiao-AdBlock
+# 注意：依赖第二个仓库的在线 JS 脚本，首次使用需能访问 raw.githubusercontent.com。
+# 与其他菜鸟广告模块不要同时启用，避免冲突。
+
+[Rule]
+# 1. 第三方广告 SDK / 素材域名（规则作用于整个设备，并非仅限菜鸟）
+DOMAIN-SUFFIX,1rtb.net,REJECT
+DOMAIN-SUFFIX,1rtb.com,REJECT
+DOMAIN-SUFFIX,pglstatp-toutiao.com,REJECT
+DOMAIN-SUFFIX,pangolin-sdk-toutiao.com,REJECT
+DOMAIN-SUFFIX,ctobsnssdk.com,REJECT
+DOMAIN,pgdt.ugdtimg.com,REJECT
+DOMAIN-SUFFIX,tanx.com,REJECT
+DOMAIN,h-adashx.ut.cainiao.com,REJECT
+DOMAIN,admonitor-feedback.cn-hangzhou.log.aliyuncs.com,REJECT
+DOMAIN,huichuan-mc.sm.cn,REJECT
+DOMAIN,image.uczzd.cn,REJECT
+DOMAIN,adx-cfg-u1.ubixioe.com,REJECT
+DOMAIN,adx-data-u1.ubixioe.com,REJECT
+DOMAIN,entry-su1.ubixioe.com,REJECT
+DOMAIN,ssp.iytcdn.com,REJECT
+# 不拦截 amdc.m.taobao.com、设备指纹及阿里账户相关域名。
+# p26-sign.douyinpic.com 涉及其他 App 共享素材，默认不拦。
+
+[URL Rewrite]
+# 2. 独立广告接口：用空字典拒绝；避免直接断连。
+^https?:\/\/[^/]+\/gw\/mtop\.cainiao\.adx\.flyad\.getad - reject-dict
+^https?:\/\/[^/]+\/gw\/mtop\.cainiao\.adkeyword\. - reject-dict
+^https?:\/\/[^/]+\/gw\/mtop\.cainiao\.nbopen\.miniapp\.recommend\.cpc - reject-dict
+^https?:\/\/[^/]+\/gw\/mtop\.[^/]*\.(?:splash|startup|launch|advert|advertise)\. - reject-dict
+^https?:\/\/[^/]+\/gw\/mtop\.cainiao\.nbmensa\.research\. - reject-dict
+# 其他 nbnetflow 广告接口；show/mshow/index 交由下面 JS 清理，避免规则互相抢占。
+^https?:\/\/[^/]+\/gw\/mtop\.cainiao\.guoguo\.nbnetflow\.ads\.(?!(?:show|mshow|index)\.cn(?:\/|$)) - reject-dict
+
+# 3. 可选的激进营销位拦截（默认关闭，可能影响签到/领券）
+# ^https?:\/\/[^/]*cnactivitycenter[^/]*\/gw\/mtop\. - reject-dict
+# ^https?:\/\/[^/]+\/gw\/mtop\.[^/]*\.cnactivitycenter\. - reject-dict
+# ^https?:\/\/[^/]+\/gw\/mtop\.[^/]*\.longquan\.place\.getpageresourcecontent - reject-dict
+# ^https?:\/\/[^/]+\/gw\/mtop\.[^/]*\.tabbar\.marketing\. - reject-dict
+
+[Script]
+# 4. 使用 JEFFRY-ZH 的 V3 响应清理脚本，保留业务接口原始 JSON 结构。
+# 脚本处理：开屏广告池、首页弹窗、推广商品流、广告气泡、营销搜索词。
+菜鸟首页与弹窗 = type=http-response,pattern=^https?:\/\/[^/]+\/gw\/mtop\.cainiao\.app\.e2e\.engine\.page\.fetch(?:\.cn)?\/1\.0,requires-body=1,max-size=-1,script-path=https://raw.githubusercontent.com/JEFFRY-ZH/Cainiao-AdBlock/main/cainiao_ad.js
+菜鸟广告池 = type=http-response,pattern=^https?:\/\/[^/]+\/gw\/mtop\.cainiao\.guoguo\.nbnetflow\.ads\.(?:show|mshow|index)\.cn\/1\.0,requires-body=1,max-size=-1,script-path=https://raw.githubusercontent.com/JEFFRY-ZH/Cainiao-AdBlock/main/cainiao_ad.js
+菜鸟商品推广流 = type=http-response,pattern=^https?:\/\/[^/]+\/gw\/mtop\.cainiao\.nbcps\.presentation\.fetch\.cn\/1\.0,requires-body=1,max-size=-1,script-path=https://raw.githubusercontent.com/JEFFRY-ZH/Cainiao-AdBlock/main/cainiao_ad.js
+
+[MITM]
+# 必须用 %APPEND% 防止覆盖用户现有 MITM 主机。
+# 为适配 Loon 仓库分析到的不同 MTop 网关，包含四个淘宝网关；
+# 这些主机可能也承载其他阿里系 App 流量，仅在理解 HTTPS 解密风险后启用。
+hostname = %APPEND% *.cainiao.com, guide-acs.m.taobao.com, acs.m.taobao.com, msgacs.m.taobao.com, h5api.m.taobao.com
