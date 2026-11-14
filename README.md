@@ -73,3 +73,5 @@ https://raw.githubusercontent.com/Maxnan/Cainiao-AdBlock-Shadowrocket/main/Caini
 - **v1.2（2026-11-14）**：根据用户提供的 Shadowrocket SQLite 日志（17:43:33–17:46:13，共 203 条请求）补充腾讯优量汇 `gdt.qq.com` 子域、`sdk.e.qq.com`、`sdkquic.e.qq.com` 和穿山甲 `pangolin-sdk-toutiao1.com`、`pangolin-sdk-toutiao-b.com` 的域名拦截。原日志显示这些域名曾被 DIRECT 放行；这些规则针对整个设备生效，而不是仅菜鸟 App，可能影响其他 App 中的广告与 SDK。没有拦截 `qq.com` 全域、`bytescm.com`、`douyinvod.com` 等共享服务。
 
 > **证据边界**：本次 SQLite 数据库包含请求 URL、分流结果及时间，不含完整 HTTP 响应体，也未记录广告素材与视频的对应关系。命中广告 SDK 并不等于确认开屏视频的实际来源。重新启动 App 后若视频仍在，请提供广告出现前后的**脱敏**网络请求记录，或在应用内安全清理缓存再测试。
+
+- **v1.3（2026-11-14）**：新日志 `proxy-2026-11-14-174923.db` 共 746 条请求，17:51:02 起可确认 v1.2 广告域名规则命中；`netflow-mtop.cainiao.com` 的 `mshow/index/batch.show` 系列共 14 条请求被 `REJECT-DICT` 拒绝。新增精确域名 `adsmind.ugdtimg.com`（17:51:20 两次 DIRECT），避免拦截共享 CDN `lf-cdn-tos.bytescm.com`。SQLite 中 `DIRECT` 表示分流结果，不能据此判断 HTTP 响应清理脚本是否成功。
