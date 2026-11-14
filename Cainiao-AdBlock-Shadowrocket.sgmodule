@@ -1,5 +1,5 @@
 #!name=菜鸟去广告（小火箭整合版）
-#!desc=v1.2：补充抓包确认的腾讯优量汇与穿山甲变体域名；广告接口规则与响应清理。需启用 HTTPS 解密。
+#!desc=v1.3：补充实测漏网的腾讯广告素材域名；广告接口重写与响应清理。需要开启 HTTPS 解密。
 #!author=Based on UserC23 & JEFFRY-ZH; Shadowrocket adaptation
 #!homepage=https://github.com/Maxnan/Cainiao-AdBlock-Shadowrocket
 #!category=广告拦截
@@ -29,6 +29,8 @@ DOMAIN-SUFFIX,gdt.qq.com,REJECT
 DOMAIN,sdk.e.qq.com,REJECT
 DOMAIN,sdkquic.e.qq.com,REJECT
 DOMAIN,pgdt.ugdtimg.com,REJECT
+# v1.3: 17:51:20 日志显示两次 DIRECT，按精准主机拦截
+DOMAIN,adsmind.ugdtimg.com,REJECT
 DOMAIN-SUFFIX,tanx.com,REJECT
 DOMAIN,h-adashx.ut.cainiao.com,REJECT
 DOMAIN,admonitor-feedback.cn-hangzhou.log.aliyuncs.com,REJECT
