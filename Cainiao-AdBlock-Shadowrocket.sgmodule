@@ -1,5 +1,5 @@
 #!name=菜鸟去广告（小火箭整合版）
-#!desc=v1.1：广告池接口改为完整拒绝；结合 Loon 和 Quantumult X 上游规则。需要 HTTPS 解密和信任证书。
+#!desc=v1.2：补充抓包确认的腾讯优量汇与穿山甲变体域名；广告接口规则与响应清理。需启用 HTTPS 解密。
 #!author=Based on UserC23 & JEFFRY-ZH; Shadowrocket adaptation
 #!homepage=https://github.com/Maxnan/Cainiao-AdBlock-Shadowrocket
 #!category=广告拦截
@@ -20,6 +20,14 @@ DOMAIN-SUFFIX,1rtb.com,REJECT
 DOMAIN-SUFFIX,pglstatp-toutiao.com,REJECT
 DOMAIN-SUFFIX,pangolin-sdk-toutiao.com,REJECT
 DOMAIN-SUFFIX,ctobsnssdk.com,REJECT
+# v1.2: 2026-11-14 17:43 实际日志显示以下广告 SDK 域名在旧版被 DIRECT 放行
+# 穿山甲另一组 SDK 主机，主域与 pangolin-sdk-toutiao.com 不同
+DOMAIN-SUFFIX,pangolin-sdk-toutiao1.com,REJECT
+DOMAIN-SUFFIX,pangolin-sdk-toutiao-b.com,REJECT
+# 腾讯优量汇广告接口：gdt.qq.com 子域 + SDK 入口（不拦截整个 qq.com）
+DOMAIN-SUFFIX,gdt.qq.com,REJECT
+DOMAIN,sdk.e.qq.com,REJECT
+DOMAIN,sdkquic.e.qq.com,REJECT
 DOMAIN,pgdt.ugdtimg.com,REJECT
 DOMAIN-SUFFIX,tanx.com,REJECT
 DOMAIN,h-adashx.ut.cainiao.com,REJECT
