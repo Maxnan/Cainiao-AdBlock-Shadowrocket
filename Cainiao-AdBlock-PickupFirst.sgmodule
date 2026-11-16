@@ -1,5 +1,5 @@
 #!name=菜鸟去广告（取件优先增强版）
-#!desc=取件优先 v1.4 实验版：加强活动中心/运营页/营销接口拦截，尽量保留取件码、取件业务。需开启 HTTPS 解密。
+#!desc=取件优先 v1.4.1 实验版：拦截广告、运营活动与指定日志上报；优先保留取件业务。需开启 HTTPS 解密。
 #!author=Based on UserC23 & JEFFRY-ZH; Shadowrocket adaptation
 #!homepage=https://github.com/Maxnan/Cainiao-AdBlock-Shadowrocket
 #!category=广告拦截
@@ -35,6 +35,9 @@ DOMAIN,adsmind.ugdtimg.com,REJECT
 DOMAIN-SUFFIX,tanx.com,REJECT
 DOMAIN,h-adashx.ut.cainiao.com,REJECT
 DOMAIN,admonitor-feedback.cn-hangzhou.log.aliyuncs.com,REJECT
+# 取件优先 v1.4.1：菜鸟专用的阿里云 SLS 日志上报域名（非已确认广告下发）
+# 可能影响故障诊断/日志上报，取件功能仍需实机验证。仅精准屏蔽该域名，不屏蔽 log.aliyuncs.com 全域。
+DOMAIN,cainiao-app-logs.cn-zhangjiakou.log.aliyuncs.com,REJECT
 DOMAIN,huichuan-mc.sm.cn,REJECT
 DOMAIN,image.uczzd.cn,REJECT
 DOMAIN,adx-cfg-u1.ubixioe.com,REJECT
