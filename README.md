@@ -75,3 +75,15 @@ https://raw.githubusercontent.com/Maxnan/Cainiao-AdBlock-Shadowrocket/main/Caini
 > **证据边界**：本次 SQLite 数据库包含请求 URL、分流结果及时间，不含完整 HTTP 响应体，也未记录广告素材与视频的对应关系。命中广告 SDK 并不等于确认开屏视频的实际来源。重新启动 App 后若视频仍在，请提供广告出现前后的**脱敏**网络请求记录，或在应用内安全清理缓存再测试。
 
 - **v1.3（2026-11-14）**：新日志 `proxy-2026-11-14-174923.db` 共 746 条请求，17:51:02 起可确认 v1.2 广告域名规则命中；`netflow-mtop.cainiao.com` 的 `mshow/index/batch.show` 系列共 14 条请求被 `REJECT-DICT` 拒绝。新增精确域名 `adsmind.ugdtimg.com`（17:51:20 两次 DIRECT），避免拦截共享 CDN `lf-cdn-tos.bytescm.com`。SQLite 中 `DIRECT` 表示分流结果，不能据此判断 HTTP 响应清理脚本是否成功。
+
+## 取件优先增强版（v1.4.1 实验版）
+
+如果只需要菜鸟的取件、取件码等功能，可选择另一份增强模块（不要和常规 v1.3 同时启用）：
+
+```text
+https://raw.githubusercontent.com/Maxnan/Cainiao-AdBlock-Shadowrocket/main/Cainiao-AdBlock-PickupFirst.sgmodule
+```
+
+相对常规版，增强版默认拒绝活动中心 `cnactivitycenter`、龙泉运营资源 `longquan.place.getpageresourcecontent` 和 `tabbar.marketing` 相关接口，可能影响签到、活动、领券与首页展示。为了减少取件功能异常，不会直接拒绝整个 `cainiao.com`、阿里 MTop 网关、账户及包裹业务接口。
+
+**v1.4.1** 新增精准域名拦截 `cainiao-app-logs.cn-zhangjiakou.log.aliyuncs.com`。这是菜鸟使用的阿里云 SLS 日志服务地址，不是已验证的广告素材接口；拦截它主要是减少日志上传，可能影响故障诊断，不能保证解决开屏广告。没有对 `log.aliyuncs.com` 做泛拦截。增强版未经过实际取件全流程验证，使用后应检查取件码、待取件列表、取件操作；出现异常请停用并改回常规版。
